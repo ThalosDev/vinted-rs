@@ -40,7 +40,7 @@ reqwest_cookie_store = "0.8"
 typed-builder = "0.20"
 fang = { version = "0.10.3", features = ["asynk"], default-features = false }
 redis-macros = { version = "0.5.2", optional = true }
-redis = { version = "0.27.5", optional = true, features = [
+redis = { version = "0.29.1", optional = true, features = [
     "tokio-comp",
     "aio",
 ] }
