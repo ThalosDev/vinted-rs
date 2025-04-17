@@ -1,8 +1,8 @@
+use crate::VintedWrapper;
 use crate::db::DbController;
 use crate::model::filter::{Currency, Filter};
 use crate::queries::VintedWrapperError;
 use crate::tests::DB_URI;
-use crate::VintedWrapper;
 use bb8_postgres::tokio_postgres::NoTls;
 use env_logger;
 
@@ -289,7 +289,7 @@ async fn test_get_items_by_material() {
 async fn test_get_items_by_color() {
     let vinted = VintedWrapper::new();
     let id = 7; //Red
-                //let hex = "#CC3300"; //Red
+    //let hex = "#CC3300"; //Red
 
     //let props = calculate_color_props(hex);
 
