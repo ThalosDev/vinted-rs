@@ -5,9 +5,9 @@ use typed_builder::TypedBuilder;
 
 #[cfg(feature = "redis")]
 use redis_macros::{FromRedisValue, ToRedisArgs};
+
 #[derive(Debug, Clone, TypedBuilder, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
-
 pub struct Color {
     /// Color id given by Vinted
     pub id: i32,
