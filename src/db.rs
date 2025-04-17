@@ -12,12 +12,12 @@ The `db` module depends on the following external crates:
 use std::fmt::Display;
 
 use bb8_postgres::{
+    PostgresConnectionManager,
     bb8::{Pool, RunError},
     tokio_postgres::{
-        tls::{MakeTlsConnect, TlsConnect},
         Row, Socket,
+        tls::{MakeTlsConnect, TlsConnect},
     },
-    PostgresConnectionManager,
 };
 use postgres_types::ToSql;
 use thiserror::Error;
