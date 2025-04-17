@@ -7,9 +7,9 @@ use crate::model::{Deserialize, Serialize};
 use redis_macros::{FromRedisValue, ToRedisArgs};
 
 use super::item::AdvancedItem;
+
 #[derive(Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
-
 pub struct Items {
     pub items: Vec<Item>,
     pub pagination: Pagination,

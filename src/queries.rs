@@ -41,9 +41,9 @@ use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::fmt;
+use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
 
 use thiserror::Error;
 
@@ -271,7 +271,7 @@ pub struct VintedWrappers<'a> {
     pub len: usize,
 }
 
-impl<'a> VintedWrappers<'a> {
+impl VintedWrappers<'_> {
     pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
         let len = hosts.len();
 
@@ -342,7 +342,7 @@ impl<'a> VintedWrappers<'a> {
     }
 }
 
-impl<'a> Default for VintedWrappers<'a> {
+impl Default for VintedWrappers<'_> {
     fn default() -> Self {
         let hosts = vec![Host::Es, Host::Fr, Host::Lu, Host::Pt, Host::It, Host::Nl];
         VintedWrappers::new_with_hosts(hosts)
@@ -361,13 +361,13 @@ pub struct VintedWrapper<'a> {
 
 static WRAPPER_ID: AtomicUsize = AtomicUsize::new(0);
 
-impl<'a> Default for VintedWrapper<'a> {
+impl Default for VintedWrapper<'_> {
     fn default() -> Self {
         Self::new_with_host(Host::Es)
     }
 }
 
-impl<'a> VintedWrapper<'a> {
+impl VintedWrapper<'_> {
     /// Creates a new `VintedWrapper` with a random host.
     ///
     /// The `new` function creates a new `VintedWrapper` instance with a random host domain. It initializes the cookie store and client for making requests to the Vinted API.

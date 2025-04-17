@@ -42,7 +42,7 @@ jobs:
           components: clippy
           override: true
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
 
       - name: Run clippy
         uses: actions-rs/cargo@v1
@@ -79,7 +79,7 @@ jobs:
           override: true
           profile: minimal
           target: x86_64-unknown-linux-gnu
-          toolchain: stable
+          toolchain: nightly
 
       - name: Build release
         uses: actions-rs/cargo@v1
