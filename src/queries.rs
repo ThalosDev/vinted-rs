@@ -155,7 +155,7 @@ impl Host {
             .filter(|domain: &Host| domain.is_euro_host())
             .collect();
 
-        let random_index = rand::thread_rng().gen_range(0..domains_euro.len());
+        let random_index = rand::rng().random_range(0..domains_euro.len());
 
         domains_euro[random_index].clone()
     }
@@ -228,7 +228,7 @@ impl From<Host> for &str {
 /// println!("Random host: {}", host);
 /// ```
 pub fn random_host<'a>() -> &'a str {
-    let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
+    let random_index = rand::rng().random_range(0..DOMAINS.len());
     DOMAINS[random_index]
 }
 
