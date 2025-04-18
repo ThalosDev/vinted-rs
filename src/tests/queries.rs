@@ -48,8 +48,8 @@ async fn test_get_item_query_text() {
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
                 VintedWrapperError::CookiesError(err) => {
                     log::error!("Unexpected CookiesError: {:?}", err);
-                    assert!(false, "CookiesError occurred unexpectedly: {:?}", err);
-                },
+                    panic!("CookiesError occurred unexpectedly: {:?}", err);
+                }
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
