@@ -119,7 +119,6 @@ const DEFAULT_USER_AGENT: &str = "*/*";
 #[derive(Debug, Clone)]
 pub enum Host {
     Fr,
-    //Be,
     Es,
     Lu,
     Nl,
@@ -141,22 +140,26 @@ pub enum Host {
     Ie,
     Hr,
     Dk,
+    //Be,
 }
 
 impl Host {
     /// Returns true if a Host has the Euro as the currency
     pub fn is_euro_host(&self) -> bool {
-        !matches!(
+        matches!(
             self,
-            Host::Com
-                | Host::Uk
-                | Host::Cz
-                | Host::Pl
-                | Host::Se
-                | Host::Ro
+            Host::Es
+                | Host::It
+                | Host::Fr
+                | Host::Pt
                 | Host::Fi
                 | Host::Gr
                 | Host::Ie
+                | Host::Lu
+                | Host::Nl
+                | Host::At
+                | Host::De
+                | Host::Lt // | Host::Be
         )
     }
 
@@ -230,7 +233,7 @@ impl From<Host> for &str {
             Host::Ie => DOMAINS[19],
             Host::Hr => DOMAINS[20],
             Host::Dk => DOMAINS[21],
-            //Host::Be => DOMAINS[17],
+            //Host::Be => DOMAINS[22],
         }
     }
 }
