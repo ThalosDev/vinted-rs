@@ -13,13 +13,18 @@ pub struct Item {
     pub title: String,
     pub size_title: String,
     pub brand_title: String,
-    pub currency: String,
-    pub price: String,
+    pub price: Price,
     pub photo: Option<Photo>,
     pub url: String,
     pub is_visible: bool,
     pub promoted: bool,
     pub favourite_count: i32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
+pub struct Price {
+    pub amount: String,
+    pub currency_code: String,
 }
 
 impl fmt::Display for Item {
@@ -28,8 +33,11 @@ impl fmt::Display for Item {
         writeln!(f, "Title: {}", self.title)?;
         writeln!(f, "Size Title: {}", self.size_title)?;
         writeln!(f, "Brand Title: {}", self.brand_title)?;
-        writeln!(f, "Currency: {}", self.currency)?;
-        writeln!(f, "Price: {}", self.price)?;
+        writeln!(
+            f,
+            "Price: {} {}",
+            self.price.amount, self.price.currency_code
+        )?;
         if let Some(ph) = &self.photo {
             writeln!(f, "Photo: {}", ph)?;
         }

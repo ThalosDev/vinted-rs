@@ -46,7 +46,7 @@ async fn test_get_item_query_text() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -78,7 +78,7 @@ async fn test_get_item_brands() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -107,7 +107,7 @@ async fn test_get_items_brands() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -147,7 +147,7 @@ async fn test_get_items_catalogs_no_db() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -170,7 +170,7 @@ async fn test_get_items_by_price() {
         Ok(items) => {
             assert!(items.items.len() <= 10);
             let ok: bool = items.items.iter().all(|item| {
-                let price: f32 = item.price.parse().unwrap();
+                let price: f32 = item.price.amount.parse().unwrap();
                 price <= max && price >= min
             });
 
@@ -181,7 +181,7 @@ async fn test_get_items_by_price() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -209,7 +209,7 @@ async fn test_get_items_by_size_no_db() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -249,7 +249,7 @@ async fn test_get_items_by_size() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -277,7 +277,7 @@ async fn test_get_items_by_material() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -309,7 +309,7 @@ async fn test_get_items_by_color() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -333,7 +333,7 @@ async fn test_get_items_by_currency() {
             assert!(items.items.len() <= num);
             let ok: bool = items.items.iter().all(|item| {
                 let c: &str = Currency::CZK.into();
-                item.currency == c
+                item.price.currency_code == c
             });
 
             assert!(ok);
@@ -343,7 +343,7 @@ async fn test_get_items_by_currency() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
@@ -383,7 +383,7 @@ async fn test_get_advanced_items() {
                             match err {
                                 VintedWrapperError::ItemNumberError => unreachable!(),
                                 VintedWrapperError::ItemError(_, _, _) => (),
-                                VintedWrapperError::CookiesError(_) => (),
+                                VintedWrapperError::CookiesError(_) => unreachable!(),
                                 VintedWrapperError::SerdeError(_) => unreachable!(),
                                 VintedWrapperError::ReqWestError(_) => unreachable!(),
                             }
@@ -397,7 +397,7 @@ async fn test_get_advanced_items() {
             match err {
                 VintedWrapperError::ItemNumberError => unreachable!(),
                 VintedWrapperError::ItemError(_, _, _) => unreachable!(),
-                VintedWrapperError::CookiesError(_) => (),
+                VintedWrapperError::CookiesError(_) => unreachable!(),
                 VintedWrapperError::SerdeError(_) => unreachable!(),
                 VintedWrapperError::ReqWestError(_) => unreachable!(),
             }
