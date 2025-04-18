@@ -36,7 +36,7 @@ async fn main() {
         POSTGRES_DB.clone()
     );
 
-    let db = DbController::new(&db_uri, 5, NoTls)
+    let db = DbController::new(db_uri, 5, NoTls)
         .await
         .expect("Broken connection to Database, please set it up correctly");
 

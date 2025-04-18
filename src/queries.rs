@@ -41,9 +41,9 @@ use reqwest::StatusCode;
 use reqwest_cookie_store::CookieStore;
 use reqwest_cookie_store::CookieStoreMutex;
 use std::fmt;
+use std::sync::Arc;
 use std::sync::atomic::AtomicUsize;
 use std::sync::atomic::Ordering;
-use std::sync::Arc;
 
 use thiserror::Error;
 
@@ -108,18 +108,17 @@ impl From<VintedWrapperError> for FangError {
     }
 }
 
-const DOMAINS: [&str; 17] = [
+const DOMAINS: [&str; 22] = [
     "fr", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl", "se",
-    "ro", "hu",
+    "ro", "hu", "fi", "gr", "ie", "hr", "dk",
     //"be",
 ];
 
-const DEFAULT_USER_AGENT: &str = "PostmanRuntime/7.32.3";
+const DEFAULT_USER_AGENT: &str = "*/*";
 
 #[derive(Debug, Clone)]
 pub enum Host {
     Fr,
-    //Be,
     Es,
     Lu,
     Nl,
@@ -136,14 +135,31 @@ pub enum Host {
     Se,
     Ro,
     Hu,
+    Fi,
+    Gr,
+    Ie,
+    Hr,
+    Dk,
+    //Be,
 }
 
 impl Host {
     /// Returns true if a Host has the Euro as the currency
     pub fn is_euro_host(&self) -> bool {
-        !matches!(
+        matches!(
             self,
-            Host::Com | Host::Uk | Host::Cz | Host::Pl | Host::Se | Host::Ro | Host::Hu
+            Host::Es
+                | Host::It
+                | Host::Fr
+                | Host::Pt
+                | Host::Fi
+                | Host::Gr
+                | Host::Ie
+                | Host::Lu
+                | Host::Nl
+                | Host::At
+                | Host::De
+                | Host::Lt // | Host::Be
         )
     }
 
@@ -155,7 +171,7 @@ impl Host {
             .filter(|domain: &Host| domain.is_euro_host())
             .collect();
 
-        let random_index = rand::thread_rng().gen_range(0..domains_euro.len());
+        let random_index = rand::rng().random_range(0..domains_euro.len());
 
         domains_euro[random_index].clone()
     }
@@ -181,6 +197,11 @@ impl From<&str> for Host {
             "se" => Host::Se,
             "ro" => Host::Ro,
             "hu" => Host::Hu,
+            "fi" => Host::Fi,
+            "gr" => Host::Gr,
+            "ie" => Host::Ie,
+            "hr" => Host::Hr,
+            "dk" => Host::Dk,
             //"be" => Host::Be,
             _ => panic!("Not valid host"),
         }
@@ -207,7 +228,12 @@ impl From<Host> for &str {
             Host::Se => DOMAINS[14],
             Host::Ro => DOMAINS[15],
             Host::Hu => DOMAINS[16],
-            //Host::Be => DOMAINS[17],
+            Host::Fi => DOMAINS[17],
+            Host::Gr => DOMAINS[18],
+            Host::Ie => DOMAINS[19],
+            Host::Hr => DOMAINS[20],
+            Host::Dk => DOMAINS[21],
+            //Host::Be => DOMAINS[22],
         }
     }
 }
@@ -228,7 +254,7 @@ impl From<Host> for &str {
 /// println!("Random host: {}", host);
 /// ```
 pub fn random_host<'a>() -> &'a str {
-    let random_index = rand::thread_rng().gen_range(0..DOMAINS.len());
+    let random_index = rand::rng().random_range(0..DOMAINS.len());
     DOMAINS[random_index]
 }
 
@@ -271,7 +297,7 @@ pub struct VintedWrappers<'a> {
     pub len: usize,
 }
 
-impl<'a> VintedWrappers<'a> {
+impl VintedWrappers<'_> {
     pub fn new_with_hosts(hosts: Vec<Host>) -> Self {
         let len = hosts.len();
 
@@ -302,6 +328,12 @@ impl<'a> VintedWrappers<'a> {
             Host::Se,
             Host::Ro,
             Host::Hu,
+            Host::Fi,
+            Host::Gr,
+            Host::Ie,
+            Host::Hr,
+            Host::Dk,
+            //Host::Be,
         ];
         VintedWrappers::new_with_hosts(hosts)
     }
@@ -342,7 +374,7 @@ impl<'a> VintedWrappers<'a> {
     }
 }
 
-impl<'a> Default for VintedWrappers<'a> {
+impl Default for VintedWrappers<'_> {
     fn default() -> Self {
         let hosts = vec![Host::Es, Host::Fr, Host::Lu, Host::Pt, Host::It, Host::Nl];
         VintedWrappers::new_with_hosts(hosts)
@@ -361,13 +393,13 @@ pub struct VintedWrapper<'a> {
 
 static WRAPPER_ID: AtomicUsize = AtomicUsize::new(0);
 
-impl<'a> Default for VintedWrapper<'a> {
+impl Default for VintedWrapper<'_> {
     fn default() -> Self {
         Self::new_with_host(Host::Es)
     }
 }
 
-impl<'a> VintedWrapper<'a> {
+impl VintedWrapper<'_> {
     /// Creates a new `VintedWrapper` with a random host.
     ///
     /// The `new` function creates a new `VintedWrapper` instance with a random host domain. It initializes the cookie store and client for making requests to the Vinted API.
@@ -471,6 +503,37 @@ impl<'a> VintedWrapper<'a> {
             self.host = host_str;
         }
     }
+
+    pub async fn get_cookies(
+        &self,
+        user_agent: Option<&str>,
+        proxy: Option<Proxy>,
+    ) -> Result<(), CookieError> {
+        let client = get_client(user_agent, proxy).await;
+
+        let request = format!("https://www.vinted.{}/", self.host);
+
+        let mut response_cookies = client.get(&request).send().await?;
+        let max_retries = 3;
+        let mut i = 0;
+
+        while response_cookies.status() != StatusCode::OK && i < max_retries {
+            response_cookies = client.post(&request).send().await?;
+            // tokio::time::sleep(Duration::from_millis(100)).await;
+            i += 1;
+        }
+
+        if response_cookies.status() != StatusCode::OK {
+            return Err(CookieError::GetCookiesError((
+                response_cookies.status(),
+                String::from(self.get_host()),
+                user_agent.unwrap_or(DEFAULT_USER_AGENT).to_string(),
+            )));
+        }
+
+        Ok(())
+    }
+
     /// Refreshes the cookies for the Vinted API.
     ///
     /// The `refresh_cookies` method clears the existing cookies, sends a request to refresh the cookies from the Vinted API, and retrieves the updated cookies.
@@ -607,7 +670,7 @@ impl<'a> VintedWrapper<'a> {
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
             );
-            self.refresh_cookies(user_agent, proxy_cookies).await?;
+            self.get_cookies(user_agent, proxy_cookies).await?;
         }
 
         let mut first = true;
@@ -780,7 +843,7 @@ impl<'a> VintedWrapper<'a> {
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
             );
-            self.refresh_cookies(user_agent, proxy_cookies).await?;
+            self.get_cookies(user_agent, proxy_cookies).await?;
         }
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
