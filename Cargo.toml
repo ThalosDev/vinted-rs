@@ -3,7 +3,7 @@ members = ["examples/filter_example", "."]
 
 [package]
 name = "vinted-rs"
-version = "0.10.0"
+version = "0.11.0"
 edition = "2024"
 repository = "https://github.com/TuTarea/vinted-rs"
 authors = [
