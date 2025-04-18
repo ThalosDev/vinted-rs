@@ -18,7 +18,7 @@ jobs:
           components: rustfmt
           override: true
           profile: minimal
-          toolchain: nightly
+          toolchain: stable
 
       - name: Check code formatting
         run: cargo fmt -- --check --verbose
