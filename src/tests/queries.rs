@@ -170,7 +170,7 @@ async fn test_get_items_by_price() {
         Ok(items) => {
             assert!(items.items.len() <= 10);
             let ok: bool = items.items.iter().all(|item| {
-                let price: f32 = item.price.parse().unwrap();
+                let price: f32 = item.price.amount.parse().unwrap();
                 price <= max && price >= min
             });
 
@@ -333,7 +333,7 @@ async fn test_get_items_by_currency() {
             assert!(items.items.len() <= num);
             let ok: bool = items.items.iter().all(|item| {
                 let c: &str = Currency::CZK.into();
-                item.currency == c
+                item.price.currency_code == c
             });
 
             assert!(ok);
