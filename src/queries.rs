@@ -325,6 +325,12 @@ impl VintedWrappers<'_> {
             Host::Se,
             Host::Ro,
             Host::Hu,
+            Host::Fi,
+            Host::Gr,
+            Host::Ie,
+            Host::Hr,
+            Host::Dk,
+            //Host::Be,
         ];
         VintedWrappers::new_with_hosts(hosts)
     }
