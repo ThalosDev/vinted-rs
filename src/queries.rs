@@ -503,6 +503,37 @@ impl VintedWrapper<'_> {
             self.host = host_str;
         }
     }
+
+    pub async fn get_cookies(
+        &self,
+        user_agent: Option<&str>,
+        proxy: Option<Proxy>,
+    ) -> Result<(), CookieError> {
+        let client = get_client(user_agent, proxy).await;
+
+        let request = format!("https://www.vinted.{}/", self.host);
+
+        let mut response_cookies = client.get(&request).send().await?;
+        let max_retries = 3;
+        let mut i = 0;
+
+        while response_cookies.status() != StatusCode::OK && i < max_retries {
+            response_cookies = client.post(&request).send().await?;
+            // tokio::time::sleep(Duration::from_millis(100)).await;
+            i += 1;
+        }
+
+        if response_cookies.status() != StatusCode::OK {
+            return Err(CookieError::GetCookiesError((
+                response_cookies.status(),
+                String::from(self.get_host()),
+                user_agent.unwrap_or(DEFAULT_USER_AGENT).to_string(),
+            )));
+        }
+
+        Ok(())
+    }
+
     /// Refreshes the cookies for the Vinted API.
     ///
     /// The `refresh_cookies` method clears the existing cookies, sends a request to refresh the cookies from the Vinted API, and retrieves the updated cookies.
@@ -639,7 +670,7 @@ impl VintedWrapper<'_> {
                 "[{}] POST_GET_COOKIES -> Get {} items @ {}",
                 self.id, num, self.host
             );
-            self.refresh_cookies(user_agent, proxy_cookies).await?;
+            self.get_cookies(user_agent, proxy_cookies).await?;
         }
 
         let mut first = true;
@@ -812,7 +843,7 @@ impl VintedWrapper<'_> {
                 "[{}] POST_GET_COOKIES -> Get item {} @ {}",
                 self.id, item_id, self.host
             );
-            self.refresh_cookies(user_agent, proxy_cookies).await?;
+            self.get_cookies(user_agent, proxy_cookies).await?;
         }
 
         let url = format!("https://www.vinted.{}/api/v2/items/{}", self.host, item_id);
