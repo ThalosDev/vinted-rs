@@ -8,7 +8,6 @@ use std::fmt;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "redis", derive(FromRedisValue, ToRedisArgs,))]
-
 pub struct Item {
     pub id: i64,
     pub title: String,
