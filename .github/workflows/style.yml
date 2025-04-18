@@ -12,6 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          components: rustfmt
+          override: true
+          profile: minimal
+          toolchain: stable
+
       - name: Check code formatting
         run: cargo fmt -- --check --verbose
 
