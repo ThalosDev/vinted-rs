@@ -108,9 +108,9 @@ impl From<VintedWrapperError> for FangError {
     }
 }
 
-const DOMAINS: [&str; 17] = [
+const DOMAINS: [&str; 22] = [
     "fr", "es", "lu", "nl", "lt", "de", "at", "it", "co.uk", "pt", "com", "cz", "sk", "pl", "se",
-    "ro", "hu",
+    "ro", "hu", "fi", "gr", "ie", "hr", "dk",
     //"be",
 ];
 
@@ -136,6 +136,11 @@ pub enum Host {
     Se,
     Ro,
     Hu,
+    Fi,
+    Gr,
+    Ie,
+    Hr,
+    Dk,
 }
 
 impl Host {
@@ -143,7 +148,15 @@ impl Host {
     pub fn is_euro_host(&self) -> bool {
         !matches!(
             self,
-            Host::Com | Host::Uk | Host::Cz | Host::Pl | Host::Se | Host::Ro | Host::Hu
+            Host::Com
+                | Host::Uk
+                | Host::Cz
+                | Host::Pl
+                | Host::Se
+                | Host::Ro
+                | Host::Fi
+                | Host::Gr
+                | Host::Ie
         )
     }
 
@@ -181,6 +194,11 @@ impl From<&str> for Host {
             "se" => Host::Se,
             "ro" => Host::Ro,
             "hu" => Host::Hu,
+            "fi" => Host::Fi,
+            "gr" => Host::Gr,
+            "ie" => Host::Ie,
+            "hr" => Host::Hr,
+            "dk" => Host::Dk,
             //"be" => Host::Be,
             _ => panic!("Not valid host"),
         }
@@ -207,6 +225,11 @@ impl From<Host> for &str {
             Host::Se => DOMAINS[14],
             Host::Ro => DOMAINS[15],
             Host::Hu => DOMAINS[16],
+            Host::Fi => DOMAINS[17],
+            Host::Gr => DOMAINS[18],
+            Host::Ie => DOMAINS[19],
+            Host::Hr => DOMAINS[20],
+            Host::Dk => DOMAINS[21],
             //Host::Be => DOMAINS[17],
         }
     }
