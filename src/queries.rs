@@ -114,7 +114,7 @@ const DOMAINS: [&str; 17] = [
     //"be",
 ];
 
-const DEFAULT_USER_AGENT: &str = "PostmanRuntime/7.32.3";
+const DEFAULT_USER_AGENT: &str = "*/*";
 
 #[derive(Debug, Clone)]
 pub enum Host {
