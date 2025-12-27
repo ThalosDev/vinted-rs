@@ -1,7 +1,8 @@
 from lib import get_brands_ids, get_colors, get_materials, get_sizes, constants, get_categories, get_countries
 
 def debug():
-    # Get brands ids from names [Readly slow scrap]
+    # Get brands ids from names [Really slow scrapping]
+    
     # get_brands_ids.exec(constants.BRANDS_FOLDER, constants.BRANDS_OUTFILE)
 
     # Get materials
